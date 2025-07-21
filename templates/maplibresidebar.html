@@ -14,41 +14,182 @@
         #map {
             flex: 1;
         }
-        #sidebar {
-            width: 300px;
-            padding: 10px;
-            background: #f4f4f4;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 10px;
-        }
+ 
+
+    .form-group {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .form-group.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    height: 0;
+    overflow: hidden;
+    }
+
+    label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border 0.3s;
+    }
+
+    input:focus,
+    select:focus {
+    border-color: #007acc;
+    }
+
+    button {
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    background-color: #007acc;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+    background-color: #005f99;
+    }
+
+    #sidebar {
+    width: 320px;
+    padding: 20px;
+    background: linear-gradient(to bottom, #ffffff, #f2f2f2);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    overflow-x: hidden;
+    }
+
+    #form-section {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        overflow-y: auto;
+    }
+
+    #reset-wrapper {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    }
+
+    #logos {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    }
+
+    #logos img {
+    max-width: 120px;
+    max-height: 50px;
+    object-fit: contain;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+    }
+
+    #logos img:hover {
+    opacity: 1;
+    }
+
+
+    #resetButton {
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    background-color: #aaa;
+    color: white;
+    cursor: not-allowed;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #resetButton:hover:enabled {
+    background-color: #005f99;
+    }
+
+    #resetButton:enabled {
+    background-color: #007acc;
+    cursor: pointer;
+    }
     </style>
 </head>
 <body>
-    <div id="sidebar">
-        <div class="form-group" style="display: none;">
-            <label for="textbox1">From:</label>
-            <input type="text" id="textbox1" />
-        </div>
-        <div class="form-group" style="display: none;">
-            <label for="textbox2">To:</label>
-            <input type="text" id="textbox2" />
-        </div>
-        <div class="form-group">
-            <label for="listbox">Profile:</label>
-            <select id="listbox">
-                <option value="option1">Breve / Shortest</option>
-                <option value="option2">Ombra adesso / Shadow now</option>
-            </select>
-        </div>
-        <button id="sendButton">Send</button>
+<div id="sidebar">
 
-        <div class="form-group">
-            <label for="ombravalue">Valore ombreggiatura:</label>
-            <input type="text" id="ombravalue" value="0" />
-        </div>
+  <!-- Sezione moduli dinamici -->
+  <div id="form-section">
+    <div class="form-group hidden" id="group-from">
+      <label for="textbox1">From:</label>
+      <input type="text" id="textbox1" placeholder="Enter origin" />
     </div>
+
+    <div class="form-group hidden" id="group-to">
+      <label for="textbox2">To:</label>
+      <input type="text" id="textbox2" placeholder="Enter destination" />
+    </div>
+
+    <div class="form-group">
+      <label for="listbox">Profile:</label>
+      <select id="listbox">
+        <option value="option1">Breve / Shortest</option>
+        <option value="option2">Ombra adesso / Shadow now</option>
+      </select>
+    </div>
+
+    <button id="sendButton">Send</button>
+
+    <div class="form-group">
+      <label for="lunghezzavalue">Lunghezza percorso (m):</label>
+      <input type="text" id="lunghezzavalue" value="0" />
+    </div>
+
+    <div class="form-group hidden" id="group-ombra">
+      <label for="ombravalue" style="margin-top: 10px;">Lunghezza percorso in ombra:</label>
+      <input type="text" id="ombravalue" value="0" />
+
+      <label for="ombraperc" style="margin-top: 10px;">Percentuale ombra:</label>
+      <input type="text" id="ombraperc" value="0" />
+    </div>
+  </div>
+
+  <!-- Bottone Reset -->
+  <div id="reset-wrapper">
+    <button id="resetButton" disabled>Reset</button>
+  </div>
+
+  <!-- Loghi in fondo -->
+  <div id="logos">
+    <img src="static/img/logo1.png" alt="Logo 1">
+    <img src="static/img/logo2.png" alt="Logo 2">
+  </div>
+
+</div>
+
     <div id="map"></div>
 
     <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>

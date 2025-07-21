@@ -1,6 +1,63 @@
-document.addEventListener('DOMContentLoaded', () => {
+let mStart = new maplibregl.Marker();
+let mEnd = new maplibregl.Marker();
+let startSelected = false;
+let endSelected = false;
+let map;
+let listboxValue;
 
-        // GeoJSON data for the LineString
+function resetFormState() {
+  document.getElementById('resetButton').disabled = true;
+
+  document.getElementById('group-from').classList.add('hidden');
+  document.getElementById('group-to').classList.add('hidden');
+  document.getElementById('group-ombra').classList.add('hidden');
+
+
+  // Reset campi
+  document.getElementById('textbox1').value = '';
+  document.getElementById('textbox2').value = '';
+  document.getElementById('ombravalue').value = '0';
+  document.getElementById('ombraperc').value = '0';
+  document.getElementById('listbox').selectedIndex = 0;
+  document.getElementById('lunghezzavalue').value = '0';
+}
+
+function resetMapState() {
+  // Rimuovi marker
+  if (mStart) {
+    mStart.remove();
+    mStart = null;
+  }
+  if (mEnd) {
+    mEnd.remove();
+    mEnd = null;
+  }
+  startSelected = false;
+  endSelected = false;
+
+  // Rimuovi percorso dalla mappa
+  console.log('--- RESET ---');
+  console.log('Line Layer esiste?', map.getLayer('lineLayer'));
+  console.log('Line Source esiste?', map.getSource('line'));
+
+  if (map.getLayer('lineLayer')) {
+    console.log('Rimuovo layer...');
+    map.removeLayer('lineLayer');
+  } else {
+    console.log('Layer non trovato, non rimosso.');
+  }
+
+  if (map.getSource('line')) {
+    console.log('Rimuovo source...');
+    map.removeSource('line');
+  } else {
+    console.log('Source non trovato, non rimosso.');
+  }
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    // GeoJSON data for the LineString
         let geojsonData = {
             "type": "Feature",
             "geometry": {
@@ -41,26 +98,33 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
           };
         //marker.remove();
-        let mStart = new maplibregl.Marker();
-        let mEnd = new maplibregl.Marker();
-        let startSelected = false;
-        let endSelected = false;
-        const map = new maplibregl.Map({
+
+        map = new maplibregl.Map({
             container: 'map', // container id
             style: styleMap,
             //center: [8.969986340036485, 44.40766886423164], // starting sition
             center: [16.608594884381546,40.667121796976886,], // starting sition
             zoom: 17 // starting zoom
         });
-
-        document.getElementById('ombravalue').hidden = true;
-
+        
+        document.getElementById("listbox").addEventListener("change", function () {
+            document.getElementById('lunghezzavalue').value = '0';
+            listboxValue = document.getElementById('listbox').value;
+            if (listboxValue === 'option2') {
+                document.getElementById('group-ombra').classList.remove('hidden');
+            }else{
+                resetFormState()
+            }
+        });
+    
+    
            // Handle send button click
     document.getElementById('sendButton').addEventListener('click', () => {
-        document.getElementById('ombravalue').hidden = true;
+        document.getElementById('resetButton').disabled = false;
+
         const textbox1Value = document.getElementById('textbox1').value;
         const textbox2Value = document.getElementById('textbox2').value;
-        const listboxValue = document.getElementById('listbox').value;
+        listboxValue = document.getElementById('listbox').value;
 
         let attr = 'length';
         console.log('Text Box 1:', textbox1Value);
@@ -112,9 +176,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             }
-            if(attr !== 'length')
-                document.getElementById('ombravalue').hidden = false;
-                document.getElementById("ombravalue").value = JSON.stringify(data["Attr value"]);
+
+        const lunghezza = parseFloat(data["lengthm"]) || 0;
+        document.getElementById("lunghezzavalue").value = parseInt(lunghezza);
+
+        if (attr !== 'length') {
+            const ombra = parseInt(data["Attr value"]) || 0;
+            const perc = lunghezza > 0 ? ((ombra / lunghezza) * 100).toFixed(2) : 0;
+
+            document.getElementById("ombravalue").value = ombra;
+            document.getElementById("ombraperc").value = perc + "%";
+            
+            document.getElementById("group-ombra").classList.remove("hidden");
+        }
+
         })
         .catch(error => console.error('Error fetching GeoJSON:', error));
 
@@ -150,6 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.getElementById('resetButton').addEventListener('click', () => {
+  resetFormState();
+  resetMapState();
+});
 
 
 
