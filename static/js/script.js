@@ -5,6 +5,7 @@ let endSelected = false;
 let map;
 let listboxValue;
 
+// Funzione per resettare lo stato del form
 function resetFormState() {
   document.getElementById('resetButton').disabled = true;
 
@@ -22,6 +23,7 @@ function resetFormState() {
   document.getElementById('lunghezzavalue').value = '0';
 }
 
+// Funzione per resettare lo stato della mappa
 function resetMapState() {
   // Rimuovi marker
   if (mStart) {
@@ -107,18 +109,19 @@ document.addEventListener('DOMContentLoaded', () => {
             zoom: 17 // starting zoom
         });
         
+        //Controlla il tipo di richiesta (shortest path, shortest path with shadow, etc..)
         document.getElementById("listbox").addEventListener("change", function () {
             document.getElementById('lunghezzavalue').value = '0';
             listboxValue = document.getElementById('listbox').value;
-            if (listboxValue === 'option2') {
+            if (listboxValue != 'option1') {
                 document.getElementById('group-ombra').classList.remove('hidden');
             }else{
                 resetFormState()
             }
         });
     
-    
-           // Handle send button click
+
+    //Gestione del click sul pulsante "Send"
     document.getElementById('sendButton').addEventListener('click', () => {
         document.getElementById('resetButton').disabled = false;
 
@@ -133,13 +136,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (listboxValue === 'option1') 
             attr = 'length';
         else if (listboxValue === 'option2')
-            attr = 'shadow';
-
+            attr = 'shadow_now';
+        else if (listboxValue === 'option3')    
+            attr = 'sh_081508'; 
+        else if (listboxValue === 'option4')
+            attr = 'sh_081510'; 
+        else if (listboxValue === 'option5')
+            attr = 'sh_081513';
+        else if (listboxValue === 'option6')
+            attr = 'sh_081517';
 
         //else if (listboxValue === 'option3')    
         //    attr = 'slope';    
         //fetch('http://labopt.iasi.cnr.it:4210/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr=length')
         //fetch('http://localhost:5000/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr=length')
+        
+        //Effettua la richiesta al server Flask per ottenere il percorso (l'algoritmo è sul server )
         fetch('http://127.0.0.1:5000/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr='+ attr)
         .then(response => response.json())
         .then(data => {

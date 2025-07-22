@@ -6,14 +6,22 @@
     <title>MapLibre with Sidebar</title>
     <link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
     <style>
-        body {
-            display: flex;
-            margin: 0;
-            height: 100vh;
-        }
-        #map {
-            flex: 1;
-        }
+    html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: sans-serif;
+    }
+
+    body {
+    display: flex;
+    height: 100vh; /* ← full viewport height */
+    }
+
+    #map {
+    flex: 1;
+    height: 100%;
+    }
  
 
     .form-group {
@@ -68,77 +76,117 @@
     }
 
     #sidebar {
-    width: 320px;
-    padding: 20px;
-    background: linear-gradient(to bottom, #ffffff, #f2f2f2);
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    height: 100%;
-    overflow-x: hidden;
+      width: 320px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(to bottom, #ffffff, #f2f2f2);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      box-sizing: border-box;
+      overflow: hidden; /* no scroll */
     }
 
     #form-section {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        overflow-y: auto;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      overflow: hidden;
     }
 
     #reset-wrapper {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
-
-    #logos {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
-    }
-
-    #logos img {
-    max-width: 120px;
-    max-height: 50px;
-    object-fit: contain;
-    opacity: 0.8;
-    transition: opacity 0.3s;
-    }
-
-    #logos img:hover {
-    opacity: 1;
-    }
-
 
     #resetButton {
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    background-color: #aaa;
-    color: white;
-    cursor: not-allowed;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      background-color: #aaa;
+      color: white;
+      cursor: not-allowed;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
     #resetButton:hover:enabled {
-    background-color: #005f99;
+      background-color: #005f99;
+      transform: scale(1.03);
     }
 
     #resetButton:enabled {
-    background-color: #007acc;
-    cursor: pointer;
+      background-color: #007acc;
+      cursor: pointer;
     }
+
+    #logos {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: flex-end;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      height: 60px;
+    }
+
+    #logos img {
+      max-height: 40px;
+      max-width: 80px;
+      object-fit: contain;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+
+    #logos img:hover {
+      opacity: 1;
+    }
+
+    /* --- Sidebar responsive per mobile --- */
+
+    #sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 320px;
+      height: 100vh;
+      transform: translateX(0);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    #sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    #sidebarToggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1100;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    @media (min-width: 769px) {
+      #sidebarToggle {
+        display: none;
+      }
+    }
+
+
     </style>
 </head>
 <body>
+<button id="sidebarToggle">☰</button>
+
 <div id="sidebar">
 
   <!-- Sezione moduli dinamici -->
@@ -158,6 +206,10 @@
       <select id="listbox">
         <option value="option1">Breve / Shortest</option>
         <option value="option2">Ombra adesso / Shadow now</option>
+        <option value="option3">Ombra mattina presto / Shadow early morning</option>
+        <option value="option4">Ombra metà mattina / Shadow late morning</option>
+        <option value="option5">Ombra mezzogiorno / Shadow noon </option>
+        <option value="option6">Ombra pomeriggio / Shadow afternoon</option>
       </select>
     </div>
 
@@ -184,8 +236,8 @@
 
   <!-- Loghi in fondo -->
   <div id="logos">
-    <img src="static/img/logo1.png" alt="Logo 1">
-    <img src="static/img/logo2.png" alt="Logo 2">
+    <img src="static/img/img1.jpeg" alt="Logo 1">
+    <img src="static/img/img2.jpeg" alt="Logo 2">
   </div>
 
 </div>
@@ -195,4 +247,12 @@
     <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
+
+<script>
+  document.getElementById("sidebarToggle").addEventListener("click", function () {
+    document.getElementById("sidebar").classList.toggle("hidden");
+  });
+</script>
+
+
 </html>
