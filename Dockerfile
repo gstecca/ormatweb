@@ -1,15 +1,20 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./app /app/
-COPY ./data /data/
+RUN pip install gunicorn
 
-EXPOSE 5000
+RUN pip install python-dotenv
 
-CMD ["python", "-u", "/app/app.py"]
+COPY . .
+
+EXPOSE 4205
+
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
+
+CMD ["gunicorn", "--workers", "4", "--bind", "0.0.0.0:4205", "app:app"]

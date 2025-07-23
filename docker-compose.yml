@@ -1,6 +1,14 @@
-version: "3"
+version: "3.8"
+
 services:
-  ormat-web:
+  web:
     build: .
+    container_name: ormat-web
     ports:
-      - "5000:5000"
+      - "${PORT}:4205"
+    env_file:
+      - .env
+    volumes:
+      - ./templates:/app/templates:ro
+      - ./static:/app/static:ro
+    restart: unless-stopped

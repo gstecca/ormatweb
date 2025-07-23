@@ -150,11 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //else if (listboxValue === 'option3')    
         //    attr = 'slope';    
-        //fetch('http://labopt.iasi.cnr.it:4210/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr=length')
+        // fetch('http://labopt.iasi.cnr.it:4210/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr=length')
         //fetch('http://localhost:5000/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr=length')
         
         //Effettua la richiesta al server Flask per ottenere il percorso (l'algoritmo è sul server )
-        fetch('http://127.0.0.1:5000/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr='+ attr)
+        // fetch('http://labopt.iasi.cnr.it:4210/v1/spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr='+ attr)
+        fetch(ORMAT_URL + 'spt?coordinates='+ mStart.getLngLat().lat   +  ','+ mStart.getLngLat().lng +','+ mEnd.getLngLat().lat   +  ','+ mEnd.getLngLat().lng +'&attr='+ attr)
         .then(response => response.json())
         .then(data => {
             // Convert geometry to GeoJSON MultiLineString
