@@ -112,6 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
         //Controlla il tipo di richiesta (shortest path, shortest path with shadow, etc..)
         document.getElementById("listbox").addEventListener("change", function () {
             document.getElementById('lunghezzavalue').value = '0';
+            document.getElementById('ombravalue').value = '0';
+            document.getElementById('ombraperc').value = '0';
             listboxValue = document.getElementById('listbox').value;
             if (listboxValue != 'option1') {
                 document.getElementById('group-ombra').classList.remove('hidden');
@@ -242,5 +244,9 @@ document.getElementById('resetButton').addEventListener('click', () => {
   resetMapState();
 });
 
+document.getElementById("toggleInfoBtn").addEventListener("click", function () {
+  const box = document.getElementById("infoBox");
+  box.style.display = (box.style.display === "block") ? "none" : "block";
+});
 
 

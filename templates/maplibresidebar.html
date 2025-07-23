@@ -181,6 +181,14 @@
       }
     }
 
+    .info-box {
+      display: none;
+      margin-top: 10px;
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9em;
+    }
 
     </style>
 </head>
@@ -229,10 +237,22 @@
     </div>
   </div>
 
+
   <!-- Bottone Reset -->
   <div id="reset-wrapper">
     <button id="resetButton" disabled>Reset</button>
   </div>
+
+  <button id="toggleInfoBtn" style="margin-top: 10px;">Info</button>
+  <div class="info-box" id="infoBox">
+    <strong>Cammini Ombreggiati a Matera</strong><br>
+    Applicazione Sperimentale sviluppata all'interno della Casa delle Tecnologie<br>
+    <strong>Dati di Origine:</strong> grafo città di Matera OpenStreetMap<br>
+    <strong>Dati per Ombreggiatura:</strong> Posizione Sole Solpos2/NREL su 3D LOD1<br>
+    <strong>Algoritmo di calcolo e sviluppo web:</strong> Consiglio Nazionale delle Ricerche
+  </div>
+
+
 
   <!-- Loghi in fondo -->
   <div id="logos">
